@@ -15,9 +15,11 @@ public class Escena {
     
     private final SimpleStringProperty Nombre;
     private final SimpleStringProperty Paginas;
+    private int paginas;
     public Escena(String nomb,String paginas){
         this.Nombre = new SimpleStringProperty(nomb);
         this.Paginas = new SimpleStringProperty(paginas);
+        this.paginas = Integer.valueOf(paginas);
     }
     public void setNombre(String nomb){
         Nombre.set(nomb);
@@ -31,6 +33,9 @@ public class Escena {
     
     public String getPaginas(){
         return Paginas.get();
+    }
+    public int getPaginasInt(){
+        return this.paginas;
     }
     
 }
