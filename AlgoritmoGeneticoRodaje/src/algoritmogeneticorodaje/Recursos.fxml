@@ -20,6 +20,12 @@
                         <Label layoutX="24.0" layoutY="24.0" text="Nombre" />
                         <Label layoutX="264.0" layoutY="24.0" text="Costo" />
                         <TextField layoutX="322.0" layoutY="20.0" />
+                        <TableView layoutX="14.0" layoutY="76.0" prefHeight="240.0" prefWidth="446.0">
+                          <columns>
+                            <TableColumn prefWidth="112.0" text="Nombre" />
+                            <TableColumn prefWidth="105.0" text="Costo" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
                </content>
@@ -31,6 +37,12 @@
                         <TextField layoutX="86.0" layoutY="32.0" />
                         <Button layoutX="271.0" layoutY="32.0" mnemonicParsing="false" text="Agregar" />
                         <Label layoutX="24.0" layoutY="36.0" text="Nombre" />
+                        <TableView layoutX="14.0" layoutY="68.0" prefHeight="252.0" prefWidth="451.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="Nombre" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
                </content>
@@ -39,8 +51,17 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField layoutX="29.0" layoutY="26.0" />
-                        <Button layoutX="203.0" layoutY="26.0" mnemonicParsing="false" text="Agregar" />
+                        <TextField layoutX="80.0" layoutY="26.0" />
+                        <Button layoutX="498.0" layoutY="26.0" mnemonicParsing="false" text="Agregar" />
+                        <Label layoutX="22.0" layoutY="30.0" text="Nombre" />
+                        <Label layoutX="249.0" layoutY="30.0" text="Num. Paginas" />
+                        <TextField layoutX="334.0" layoutY="26.0" />
+                        <TableView layoutX="14.0" layoutY="68.0" prefHeight="256.0" prefWidth="464.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="Nombre" />
+                            <TableColumn prefWidth="127.0" text="Num Paginas" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
               </content>
