@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="algoritmogeneticorodaje.RecursosController">
+   <children>
+      <TabPane layoutX="15.0" layoutY="18.0" prefHeight="365.0" prefWidth="571.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Recursos">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TextField layoutX="95.0" layoutY="20.0" />
+                        <Button layoutX="498.0" layoutY="20.0" mnemonicParsing="false" text="Agregar" />
+                        <Label layoutX="24.0" layoutY="24.0" text="Nombre" />
+                        <Label layoutX="264.0" layoutY="24.0" text="Costo" />
+                        <TextField layoutX="322.0" layoutY="20.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+          <Tab text="Locacion">
+               <content>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TextField layoutX="86.0" layoutY="32.0" />
+                        <Button layoutX="271.0" layoutY="32.0" mnemonicParsing="false" text="Agregar" />
+                        <Label layoutX="24.0" layoutY="36.0" text="Nombre" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Escena">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField layoutX="29.0" layoutY="26.0" />
+                        <Button layoutX="203.0" layoutY="26.0" mnemonicParsing="false" text="Agregar" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
