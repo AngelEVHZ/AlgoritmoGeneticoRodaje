@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package algoritmogeneticorodaje;
+package algoritmogeneticorodaje.Recursos;
 
 /**
  *
@@ -110,6 +110,7 @@ public class Cromosoma {
         return (tipoJornada(j) == tipoJornada(j+1)  );
        
     }
+    
     public int tipoJornada( int j){
        int tipo=0;
         for(int e=0; e < Nescenas;e++){
