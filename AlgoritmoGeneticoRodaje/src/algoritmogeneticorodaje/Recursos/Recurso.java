@@ -15,6 +15,7 @@ public class Recurso {
     private final SimpleStringProperty Nombre;
     private final SimpleStringProperty Costo;
     private int costo;
+    int id;
     public Recurso(String nomb, String costo) {
         this.Nombre = new SimpleStringProperty(nomb);
         this.Costo = new SimpleStringProperty(costo);
@@ -37,5 +38,11 @@ public class Recurso {
     
     public String getCosto(){
         return Costo.get();
+    }
+    public void setId(int id){
+        this.id=id;
+    }
+    public int getId(){
+        return this.id;
     }
 }

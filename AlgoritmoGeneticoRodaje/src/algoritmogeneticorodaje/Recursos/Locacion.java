@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Locacion {
     private final SimpleStringProperty Nombre;
+    int id;
     public Locacion(String nomb){
         this.Nombre = new SimpleStringProperty(nomb);
      
@@ -23,6 +24,12 @@ public class Locacion {
     
     public String getNombre(){
         return Nombre.get();
+    }
+    public void setId(int id){
+        this.id=id;
+    }
+    public int getId(){
+        return this.id;
     }
     
     

@@ -14,9 +14,9 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField layoutX="24.0" layoutY="49.0" />
+                        <TextField fx:id="pJornada" layoutX="24.0" layoutY="49.0" />
                         <Label layoutX="24.0" layoutY="23.0" text="Paginas por Jornada" />
-                        <Button layoutX="286.0" layoutY="49.0" mnemonicParsing="false" text="Guardar" />
+                        <Button layoutX="369.0" layoutY="49.0" mnemonicParsing="false" onAction="#run" prefHeight="25.0" prefWidth="58.0" text="Run" />
                      </children>
                   </AnchorPane>
               </content>
@@ -26,7 +26,7 @@
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <TextField fx:id="nomRecursoTF" layoutX="95.0" layoutY="20.0" />
-                        <Button layoutX="498.0" layoutY="20.0" mnemonicParsing="false" onAction="#agregarRecurso" text="Agregar" />
+                        <Button layoutX="472.0" layoutY="135.0" mnemonicParsing="false" onAction="#agregarRecurso" text="Agregar" />
                         <Label layoutX="24.0" layoutY="24.0" text="Nombre" />
                         <Label layoutX="264.0" layoutY="24.0" text="Costo" />
                         <TextField fx:id="costoTF" layoutX="322.0" layoutY="20.0" />
@@ -41,7 +41,7 @@
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <TextField fx:id="nomLocacionTF" layoutX="86.0" layoutY="32.0" />
-                        <Button layoutX="271.0" layoutY="32.0" mnemonicParsing="false" onAction="#agregarLocacion" text="Agregar" />
+                        <Button layoutX="489.0" layoutY="129.0" mnemonicParsing="false" onAction="#agregarLocacion" text="Agregar" />
                         <Label layoutX="24.0" layoutY="36.0" text="Nombre" />
                         <TableView fx:id="tablaLocacion" layoutX="14.0" layoutY="68.0" prefHeight="252.0" prefWidth="451.0" />
                         <Button layoutX="489.0" layoutY="175.0" mnemonicParsing="false" onAction="#eliminarLocacion" text="Eliminar" />
@@ -53,13 +53,40 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="nomEscenaTF" layoutX="80.0" layoutY="26.0" />
-                        <Button layoutX="498.0" layoutY="26.0" mnemonicParsing="false" onAction="#agregarEscena" text="Agregar" />
-                        <Label layoutX="22.0" layoutY="30.0" text="Nombre" />
-                        <Label layoutX="249.0" layoutY="30.0" text="Num. Paginas" />
-                        <TextField fx:id="numPaginasTF" layoutX="334.0" layoutY="26.0" />
+                        <TextField fx:id="nomEscenaTF" layoutX="66.0" layoutY="14.0" />
+                        <Button layoutX="502.0" layoutY="126.0" mnemonicParsing="false" onAction="#agregarEscena" text="Agregar" />
+                        <Label layoutX="14.0" layoutY="18.0" text="Nombre" />
+                        <Label layoutX="231.0" layoutY="18.0" text="Num. Paginas" />
+                        <TextField fx:id="numPaginasTF" layoutX="311.0" layoutY="14.0" prefHeight="25.0" prefWidth="57.0" />
                         <TableView fx:id="tablaEscena" layoutX="14.0" layoutY="68.0" prefHeight="256.0" prefWidth="464.0" />
                         <Button layoutX="502.0" layoutY="171.0" mnemonicParsing="false" onAction="#eliminarEscena" text="Eliminar" />
+                        <MenuButton fx:id="menuDiaNoche" layoutX="393.0" layoutY="14.0" mnemonicParsing="false" text="Tiempo" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Escena/Locacion">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tablaEscena2" layoutX="14.0" layoutY="68.0" prefHeight="252.0" prefWidth="273.0" />
+                        <TableView fx:id="tablaLocacion2" layoutX="298.0" layoutY="68.0" prefHeight="252.0" prefWidth="273.0" />
+                        <Button layoutX="495.0" layoutY="31.0" mnemonicParsing="false" onAction="#asignarLocacion" text="Asignar" />
+                        <Label fx:id="escenalabel" layoutX="25.0" layoutY="35.0" text="Escena" />
+                        <Label fx:id="locacionlabel" layoutX="143.0" layoutY="35.0" text="Locacion" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Escena/Recurso">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tablaEscena3" layoutX="14.0" layoutY="68.0" prefHeight="246.0" prefWidth="235.0" />
+                        <TableView fx:id="tablaRecursos2" layoutX="308.0" layoutY="68.0" prefHeight="246.0" prefWidth="235.0" />
+                        <Label fx:id="escena2label" layoutX="20.0" layoutY="6.0" text="Escena" />
+                        <Label fx:id="recursoslabel" layoutX="20.0" layoutY="34.0" text="Recursos" />
+                        <Button layoutX="470.0" layoutY="22.0" mnemonicParsing="false" onAction="#asignarRecurso" text="Asignar" />
                      </children>
                   </AnchorPane>
               </content>

@@ -5,6 +5,7 @@
  */
 package algoritmogeneticorodaje.Recursos;
 
+import java.util.ArrayList;
 import javafx.beans.property.SimpleStringProperty;
 
 /**
@@ -16,10 +17,40 @@ public class Escena {
     private final SimpleStringProperty Nombre;
     private final SimpleStringProperty Paginas;
     private int paginas;
-    public Escena(String nomb,String paginas){
+    private int tiempo;
+    int id;
+    
+    Locacion locacion=null;
+    ArrayList<Recurso> recursos;
+    
+    public Escena(String nomb,String paginas,int tiempo){
         this.Nombre = new SimpleStringProperty(nomb);
         this.Paginas = new SimpleStringProperty(paginas);
         this.paginas = Integer.valueOf(paginas);
+        this.tiempo=tiempo;
+        recursos=new ArrayList<Recurso>();
+    }
+    
+    public ArrayList<Recurso> getRecurso(){
+        return this.recursos;
+    }
+    
+
+  
+    public void addRecurso(Recurso recurso){
+
+        if(this.recursos.indexOf(recurso)>=0)
+            return;
+
+        this.recursos.add(recurso);
+    }
+    public void setLocacion(Locacion locacion){
+        this.locacion=locacion;
+    }
+    public Locacion getLocacion(){
+        if(this.locacion!=null)
+            return this.locacion;
+        return null;
     }
     public void setNombre(String nomb){
         Nombre.set(nomb);
@@ -38,4 +69,13 @@ public class Escena {
         return this.paginas;
     }
     
+    public void setId(int id){
+        this.id=id;
+    }
+    public int getId(){
+        return this.id;
+    }
+    public int getTiempo(){
+        return this.tiempo;
+    }
 }
