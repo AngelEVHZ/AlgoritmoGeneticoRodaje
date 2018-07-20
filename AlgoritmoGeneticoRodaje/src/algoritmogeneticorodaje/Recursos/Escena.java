@@ -19,6 +19,7 @@ public class Escena {
     private int paginas;
     private int tiempo;
     int id;
+    int rSize=0;
     
     Locacion locacion=null;
     ArrayList<Recurso> recursos;
@@ -35,13 +36,15 @@ public class Escena {
         return this.recursos;
     }
     
-
+    public int getRecursoSize(){
+        return this.rSize;
+    }
   
     public void addRecurso(Recurso recurso){
 
         if(this.recursos.indexOf(recurso)>=0)
             return;
-
+        rSize++;
         this.recursos.add(recurso);
     }
     public void setLocacion(Locacion locacion){

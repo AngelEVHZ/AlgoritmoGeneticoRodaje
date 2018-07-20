@@ -16,9 +16,10 @@ public class Cromosoma {
     
     ObservableList<Escena> dataEscena;
     ObservableList<Recurso> dataRecurso;
-    
+    ArrayList<Jornada> jornadas;
  
     public Cromosoma( int Nescenas,int Nrecursos,int Nlocalizaciones,int Njornadas,int NpaginasJornada,ObservableList<Escena> dataEscena,ObservableList<Recurso> dataRecurso){
+            this.jornadas = new ArrayList<Jornada>();
             this.Nescenas=Nescenas;
             this.Nrecursos=Nrecursos;
             this.Nlocalizaciones=Nlocalizaciones;
@@ -27,10 +28,18 @@ public class Cromosoma {
             this.dataEscena = dataEscena;
             this.dataRecurso=dataRecurso;
             this.NtotalPaginas=0;
-            declarar();
+            declarar(1);
            
            
     }
+    public void reiniciar(){
+         this.jornadas = new ArrayList<Jornada>();
+            this.NtotalPaginas=0;
+            declarar(1);
+    
+    
+    }
+    
     public void setOrdenFilmacion(int []orden){
         this.ordenFilmacion = orden;
     }
@@ -50,14 +59,18 @@ public class Cromosoma {
         }
         
     }
-    
+    public void setOrden(int [] ordenFilmacion){
+        this.ordenFilmacion = ordenFilmacion;
+    }
+    public int[] getOrdenFilmacion(){
+        return this.ordenFilmacion;
+    }
     public void llenarTodo(){
          Escena e;
         for(int i=0; i<this.Nescenas;i++){       
             e = dataEscena.get(ordenFilmacion[i]);
             NtotalPaginas+=e.getPaginasInt();
-            
-            System.out.println(e.getNombre());
+        //    System.out.println(e.getNombre());
             
             for(Recurso r: e.getRecurso()){
                  A[r.getId()][ordenFilmacion[i]]=1;//si el recurso debe participar en la escene
@@ -70,12 +83,122 @@ public class Cromosoma {
         for(Recurso r:dataRecurso){
             C[r.getId()] = r.getCostoInt();
         }
-        /*for(int i=0; i < Nescenas;i++){ //IMPRIMIR A
-            for(int j=0;j<Nlocalizaciones;j++){
-                System.out.print(Y[i][j]+" ");
+        
+        for(int i=0; i< this.Nrecursos;i++){ F[i]=1000;L[i]=-1;}
+        
+        for(Jornada j:this.jornadas){
+            if(j.getSize()>0){
+                for(Escena e2: j.getEscenas() ){
+                    Z[e2.getId()][j.getId()]=1;
+                    B[e2.getLocacion().getId()][j.getId()]=1;
+                    if(e2.getRecursoSize()>0){
+                        for(Recurso r: e2.getRecurso()){
+                            O[r.getId()][j.getId()]=1;
+                            W[r.getId()][j.getId()]=1;
+                            
+                            if(F[r.getId()] > j.getId()  ){
+                                F[r.getId()] =  j.getId(); 
+                            }
+                            if(L[r.getId()]< j.getId() ){
+                                L[r.getId()] = j.getId();
+                            }
+                        }
+                    }
+                }
             }
+        
+        }
+       /* System.out.println("");
+         for(int i=0; i< this.Nrecursos;i++){ 
+             System.out.println("Primera vez del recurso "+ i + " j" +F[i]);
+             System.out.println("ultima vez del recurso "+ i + " j" +L[i]);
+            
+         }
+       */
+    }
+    public void generarJornadas(){
+        int tiempoActual;
+        int tiempoAnterior;
+        int paginasActuales=0;
+        int Njornadas=0;
+        Escena e;
+        Jornada j = new Jornada();
+        tiempoActual = dataEscena.get(ordenFilmacion[0]).getTiempo();
+        tiempoAnterior = tiempoActual;
+        for(int i=0; i< this.ordenFilmacion.length; i++){
+            
+            e = dataEscena.get(ordenFilmacion[i]);
+            //System.out.println("Escena "+ e.getNombre());
+            paginasActuales+=e.getPaginasInt();
+            tiempoAnterior = tiempoActual;
+            tiempoActual=e.getTiempo();
+            
+            //System.out.println("paginas actuales " +paginasActuales);
+            if(tiempoActual!= tiempoAnterior){
+              //  System.out.println("Cambio de tiempo");
+                j.setId(Njornadas);
+                Njornadas+=2;
+                paginasActuales=e.getPaginasInt();
+                this.jornadas.add(j);
+                this.jornadas.add(new Jornada(Njornadas-1));
+                j = new Jornada();
+              
+            }else if(paginasActuales > this.NpaginasJornada){
+              
+               j.setId(Njornadas);
+               jornadas.add(j);
+               j = new Jornada();
+               Njornadas++;
+               paginasActuales=e.getPaginasInt();
+            }
+             //System.out.println("se añadio a j "+Njornadas);
+            j.addEscena(e);
+        }
+        jornadas.add(j);
+        j.setId(Njornadas);
+        
+      //  System.out.println(Njornadas);
+       // System.out.println(jornadas.size());
+       this.Njornadas = Njornadas+1;
+       declarar(2);
+       llenarTodo();
+   
+    }
+    public void prinOrden(){
         System.out.println("");
-        }*/
+        for(int i=0; i< this.Nescenas;i++){
+            System.out.print(this.ordenFilmacion[i]+" ");   
+        
+        }
+        System.out.println("");
+    
+    }
+    
+    public String printJornadas(){
+        String texto="";
+        String t="";
+        System.out.println("/**************/");
+        for(Jornada j: this.jornadas){
+           //System.out.println("id "+j.getId()+ " tam "+j.getSize());
+           
+            System.out.println("Jornada "+ j.getId());
+            texto+="Dia "+ (j.getId()+1)+"\n";
+            if(j.getSize()>0){
+                for(Escena e : j.getEscenas()){
+                    if( e.getTiempo()==1){t="Dia";}
+                    else t="Noche";
+                    System.out.println("    -"+e.getNombre()+ " Tiempo " + t );
+                    texto+="\t-"+e.getNombre()+ " Tiempo " + e.getTiempo()+"\n";
+                }
+            }else{
+               
+                System.out.println("    -Libre ");
+                texto+="\t-Libre\n";
+            
+            }
+        
+        }
+       return texto;
     }
     
     
@@ -110,20 +233,36 @@ public class Cromosoma {
     int F[];// primera jornada del programa en el que el recurso r se utiliza
     int L[];// ultima jornada del programa en el que el recurso r se utiliza
     
-    public void declarar(){
+    public int [][] getA(){
+        return this.A;
+    }
+    public int [][] getW(){
+        return this.W;
+    }
+    public int getNJornadas(){
+        return this.Njornadas;
+    }
+    
+    public void declarar(int parte){
+        if(parte==1){
             A = new int[Nrecursos][Nescenas]; // si el recurso debe participar en la escene
             Y = new int[Nescenas][Nlocalizaciones]; // si la escena debe ser gravada en la localizacion
-            B = new int[Nlocalizaciones][Njornadas]; // si la localizacion esta disponible en la jornada
-            O = new int[Nrecursos][Njornadas]; // si el recurso esta disponible en la jornada
+           
             P = new int[Nescenas]; // si la escena se filma de dia
             D = new int[Nescenas]; // duracion de la escena 
             C = new int[Nrecursos]; // costo del recurso en moneda/jornada
-
+         
+        }else{    
+            B = new int[Nlocalizaciones][Njornadas]; // si la localizacion esta disponible en la jornada
+            O = new int[Nrecursos][Njornadas]; // si el recurso esta disponible en la jornada
+            
+            
             //Variables
             Z = new int[Nescenas][Njornadas];// si la escena se programa en la jornada
             W = new int[Nrecursos][Njornadas]; // si el recurso sera utilizado en la jornada
             F = new int[Nrecursos];// primera jornada del programa en el que el recurso r se utiliza
             L = new int[Nrecursos];// ultima jornada del programa en el que el recurso r se utiliza
+        }
     }
     
     

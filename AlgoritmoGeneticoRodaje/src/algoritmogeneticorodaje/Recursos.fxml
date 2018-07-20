@@ -14,9 +14,32 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="pJornada" layoutX="24.0" layoutY="49.0" />
-                        <Label layoutX="24.0" layoutY="23.0" text="Paginas por Jornada" />
-                        <Button layoutX="369.0" layoutY="49.0" mnemonicParsing="false" onAction="#run" prefHeight="25.0" prefWidth="58.0" text="Run" />
+                        <TextField fx:id="pJornada" layoutX="24.0" layoutY="28.0" text="5" />
+                        <Label layoutX="24.0" layoutY="6.0" text="Paginas por Jornada" />
+                        <Button layoutX="325.0" layoutY="28.0" mnemonicParsing="false" onAction="#run" prefHeight="25.0" prefWidth="105.0" text="Run Original" />
+                        <Button layoutX="449.0" layoutY="28.0" mnemonicParsing="false" onAction="#run2" prefHeight="25.0" prefWidth="97.0" text="Run Mejorado" />
+                        <TabPane layoutX="1.0" layoutY="66.0" prefHeight="265.0" prefWidth="571.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Calendario">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextArea fx:id="calendario" layoutX="14.0" layoutY="6.0" prefHeight="200.0" prefWidth="546.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="Recurso/Dia">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextArea fx:id="recursoDia" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="546.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
                      </children>
                   </AnchorPane>
               </content>

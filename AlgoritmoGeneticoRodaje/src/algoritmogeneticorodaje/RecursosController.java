@@ -24,6 +24,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -35,6 +36,7 @@ import javafx.stage.Stage;
  */
 public class RecursosController implements Initializable {
     Stage stage;
+    @FXML TextArea calendario, recursoDia;
     @FXML
     MenuButton menuDiaNoche;
     @FXML 
@@ -277,6 +279,14 @@ public class RecursosController implements Initializable {
     }
       @FXML
     private void run(ActionEvent event){
+        int pj = Integer.valueOf(this.pJornada.getText());
+        Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
+        
+        this.recursoDia.setText(p.printCaledario());
+        this.calendario.setText(p.printJornadas());
+    }
+     @FXML
+    private void run2(ActionEvent event){
         int pj = Integer.valueOf(this.pJornada.getText());
         Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
     }
