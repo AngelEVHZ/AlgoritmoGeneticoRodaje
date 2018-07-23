@@ -272,6 +272,7 @@ public class Cromosoma {
         for(int r=0;r<Nrecursos;r++){
             total+= C[r] * (L[r] - F[r] + 1);
         }
+        //System.out.println(total);
         return total;
     }
     // un recurso sera utilizado en una jornada solo si existe una escena programada para esa jornada que lo requiera

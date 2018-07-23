@@ -6,6 +6,7 @@
 package algoritmogeneticorodaje.Recursos;
 
 import java.util.ArrayList;
+import java.util.Random;
 import javafx.collections.ObservableList;
 
 /**
@@ -13,20 +14,39 @@ import javafx.collections.ObservableList;
  * @author Valenzuela
  */
 public class Procesar {
-     ObservableList<Recurso> dataRecurso;
-     ObservableList<Locacion> dataLocacion;
-     ObservableList<Escena> dataEscena;
-      ArrayList<Cromosoma> cromosomasList;
+    ObservableList<Recurso> dataRecurso;
+    ObservableList<Locacion> dataLocacion;
+    ObservableList<Escena> dataEscena;
+    ArrayList<Cromosoma> cromosomasList;
     ArrayList<Cromosoma> childCromosomasList;
+    ArrayList<Integer> fitnesHistoria;
+    Mejores mejores;
     Cromosoma ganador;
+    Cromosoma ganadorAntes;
+
+    
      int Nescenas;
      int Nrecursos;
      int Nlocalizaciones;
      int Njornadas;
      int paginasJornada;
+     int Npoblacion=20;
+     int NpoblacionInicial=10;
+     double stopValue = 0;
+     int stopCont=0;
+     int stopContM=5;
+     int mejora;
+     int iteraciones=0;
+     int mejorF=0;
      
-     public Procesar(ObservableList<Recurso> dataRecurso, ObservableList<Locacion> dataLocacion,ObservableList<Escena> dataEscena,int pj){
+     public Mejores getMejores(){
+         return this.mejores;
+     }
+
+     public Procesar(ObservableList<Recurso> dataRecurso, ObservableList<Locacion> dataLocacion,ObservableList<Escena> dataEscena,int pj,int mejora){
+         mejores = new Mejores();
          this.cromosomasList = new ArrayList<Cromosoma>();
+         this.fitnesHistoria=new ArrayList<Integer>();
          this.dataRecurso = dataRecurso;
          this.dataLocacion = dataLocacion;
          this.dataEscena = dataEscena;
@@ -36,36 +56,95 @@ public class Procesar {
          this.Nlocalizaciones=this.dataLocacion.size();
          this.Njornadas=10;
          
-         
+         this.mejora=mejora;
          setIds();
          addPoblacionInicial();
-         search();
+         if(mejora==1)
+            search();
+         else
+            search2();
+         
         //crearCromosoma();
      }
-     
+     public int  getIteraciones(){
+         return this.iteraciones;
+     }
     public void search(){
         int index = 0;
-        
-        for(int i=0; i<10; i++){
+        int iteraciones=0;
+
+        while(stopMethod(10,iteraciones)){
             //System.out.println("ITERACION "+i+ " #HIJOS " + this.cromosomasList.size());
             //System.out.println("SELECTION");
-            index = selection();
+            index = RouletteWheelSelection();
+            mejores.add(this.cromosomasList.get(index));
+            fitnesHistoria.add(new Integer(this.cromosomasList.get(index).funcionObjetivo()));
             //System.out.println("CROSSOVER");
             this.childCromosomasList = crossover(index);
             mutation( this.childCromosomasList);
             this.cromosomasList = this.childCromosomasList;
             limpiar();
+            iteraciones++;
         }
+        
          index = selection();
          System.out.println("Ganador");
          //this.cromosomasList.get(index).printJornadas();
          System.out.println("Fitness "+  this.cromosomasList.get(index).funcionObjetivo());
          this.ganador =  this.cromosomasList.get(index);
+         System.out.println("Iteraciones "+ iteraciones);
+        // this.iteraciones = iteraciones;
+         this.mejorF=this.cromosomasList.get(index).funcionObjetivo();
+         mejores.setIteracion(this.iteraciones);
+         System.out.println("Termino en iteracion "+ this.iteraciones + " total de iter "+ iteraciones);
     }
+    
+    public void printHistorial(){
+        System.out.println("/************************/");
+        for(Integer i : this.fitnesHistoria){
+            System.out.println(i.intValue());
+        }
+    
+    }
+    public void search2(){
+        int index = 0;
+        int iteraciones=0;
+
+        while(stopMethod(10,iteraciones)){
+            //System.out.println("ITERACION "+i+ " #HIJOS " + this.cromosomasList.size());
+            //System.out.println("SELECTION");
+            index = selection();
+            mejores.add(this.cromosomasList.get(index));
+            fitnesHistoria.add(new Integer(this.cromosomasList.get(index).funcionObjetivo()));
+            //System.out.println("CROSSOVER");
+            this.childCromosomasList = crossover(index);
+            mutation( this.childCromosomasList);
+            this.cromosomasList = this.childCromosomasList;
+            limpiar();
+            iteraciones++;
+        }
+        
+         index = selection();
+         System.out.println("Ganador");
+         //this.cromosomasList.get(index).printJornadas();
+         System.out.println("Fitness "+  this.cromosomasList.get(index).funcionObjetivo());
+         this.ganador =  this.cromosomasList.get(index);
+         System.out.println("Iteraciones "+ iteraciones);
+         //this.iteraciones = iteraciones;
+         this.mejorF=this.cromosomasList.get(index).funcionObjetivo();
+         mejores.setIteracion(this.iteraciones);
+         System.out.println("Termino en iteracion "+ this.iteraciones + " total de iter "+ iteraciones);
+    }
+    
+    public int getMejorF(){
+        return this.mejorF;
+    }
+    
+    
     public String printJornadas(){
         return ganador.printJornadas();
     }
-    public String printCaledario(){
+        public String printCaledario(){
         String texto="\n";
         texto+="Costo Total: $"+ ganador.funcionObjetivo()+" \n";
         int[][] W = ganador.getW();
@@ -102,14 +181,14 @@ public class Procesar {
     
      public void limpiar(){
         int size = this.cromosomasList.size();
-        if(size>10){
+        if(size>this.Npoblacion){
             int index =0;
-            double minFitness=0;
+            double maxFitness=0;
             double currentFitness=0;
             for(int i=0; i < cromosomasList.size(); i++){
                 currentFitness =  cromosomasList.get(i).funcionObjetivo() ;
-                if(currentFitness > minFitness){
-                    minFitness = currentFitness;
+                if(currentFitness > maxFitness){
+                    maxFitness = currentFitness;
                     index = i;
                 }
             }
@@ -156,31 +235,43 @@ public class Procesar {
    
     }
     public void addPoblacionInicial(){
-        Cromosoma c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
-        c.setRandom();
-        c.generarJornadas();
-        this.cromosomasList.add(c);
-        c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
-        c.setRandom();
-        c.generarJornadas();
-        this.cromosomasList.add(c);
-        c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
-        c.setRandom();
-        c.generarJornadas();
-        this.cromosomasList.add(c);
-        c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
-        c.setRandom();
-        c.generarJornadas();
-        this.cromosomasList.add(c);
-    
-        for(Cromosoma cr : this.cromosomasList){
-            cr.printJornadas();
-            //System.out.println("Fitness " +cr.funcionObjetivo());
+        
+        for(int i=0; i<NpoblacionInicial;i++){
+            Cromosoma c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
+            c.setRandom();
+            c.generarJornadas();
+            this.cromosomasList.add(c);
         }
+        
+        newChildUniform(this.cromosomasList.get(0).getOrdenFilmacion(),this.cromosomasList.get(2).getOrdenFilmacion() );
     }
+    
+
+
+    // Returns a uniformly distributed double value between 0.0 and 1.0
+    double randUniformPositive() {
+            // easiest implementation
+            return new Random().nextDouble();
+    }
+    public int RouletteWheelSelection(){
+        double totalFitnese =0;
+        int index=0;
+        for(Cromosoma c: this.cromosomasList){
+            totalFitnese+= c.funcionObjetivo();
+        }
+        double value = randUniformPositive() * totalFitnese;
+        for(int i=0; i<this.cromosomasList.size(); i++) {		
+                    value -= this.cromosomasList.get(i).funcionObjetivo();
+                    if(value < 0) return i;
+            }
+            // when rounding errors occur, we return the last item's index 
+        return this.cromosomasList.size()-1;
+    }
+    
+    
     public int selection(){
         int index =0;
-        double minFitness=0;
+        double minFitness=cromosomasList.get(0).funcionObjetivo();
         double currentFitness=0;
         for(int i=0; i < cromosomasList.size(); i++){
             currentFitness =cromosomasList.get(i).funcionObjetivo();
@@ -196,20 +287,50 @@ public class Procesar {
         ArrayList<Cromosoma> children = new ArrayList<Cromosoma>();
         for(int i=0; i < cromosomasList.size();i++){
             if(i!= index){
-                int[] mparent2 = cromosomasList.get(i).getOrdenFilmacion();
-                Cromosoma child = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
-                child.setOrdenFilmacion( newChild(mparent1,mparent2));
-                child.generarJornadas();
                 
-                Cromosoma child2 = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
-                child2.setOrdenFilmacion( newChild(mparent2,mparent1));
-                child2.generarJornadas();
+                if(this.mejora==1){
+                    int[] mparent2 = cromosomasList.get(i).getOrdenFilmacion();
+                    Cromosoma child = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
+
+
+
+                    child.setOrdenFilmacion( newChildUniform(mparent1,mparent2));
+                    child.generarJornadas();
+
+                    Cromosoma child2 = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
+                    child2.setOrdenFilmacion( newChildUniform(mparent2,mparent1));
+                    child2.generarJornadas();
+
+                   // child.prinOrden();
+                   // child2.prinOrden();
+
+                    children.add(child);
+                    children.add(child2);  
+                }else{
+                    
+                    int[] mparent2 = cromosomasList.get(i).getOrdenFilmacion();
+                    Cromosoma child = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
+
+
+
+                    child.setOrdenFilmacion( newChild(mparent1,mparent2));
+                    child.generarJornadas();
+
+                    Cromosoma child2 = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
+                    child2.setOrdenFilmacion( newChild(mparent2,mparent1));
+                    child2.generarJornadas();
+
+                   // child.prinOrden();
+                   // child2.prinOrden();
+
+                    children.add(child);
+                    children.add(child2);
                 
-               // child.prinOrden();
-               // child2.prinOrden();
                 
-                children.add(child);
-                children.add(child2);  
+                
+                
+                }
+               
             }
         }
         return children;
@@ -259,6 +380,53 @@ public class Procesar {
        
         return child;
     }
+    public boolean isInM(int m[], int n){
+        for(int i=0;i<this.Nescenas;i++){
+            if(n == m[i])
+                return true;
+        }
+        return false;
+    }
+    public boolean setM(int m[], int n){
+        for(int i=0;i<this.Nescenas;i++){
+            if( m[i]==-1){
+                m[i] = n;
+                return true;
+            }
+                
+        }
+        return false;
+    }
+    
+    
+     public int [] newChildUniform(int [] mp1, int[] mp2){
+        int[] mp1c = mp1.clone();
+        int[] mp2c = mp2.clone();
+      
+        int child[] = new int[this.Nescenas];
+        for(int i =0;i < this.Nescenas;i++)child[i]=-1;
+        for(int i=0;i<this.Nescenas;i++){
+            if((i+1)%2!=0 ){
+                child[i] = mp1c[i];
+            }
+        }
+        for(int i=0;i<this.Nescenas;i++){
+            if(child[i]==-1){
+                for(int j=0; j<this.Nescenas;j++){
+                    if(!isInM(child,mp2c[j])){
+                        setM(child,mp2c[j]);
+                    }
+                   
+                }
+            }
+        
+        }
+       /*  System.out.println("");
+        for(int i =0;i < this.Nescenas;i++)System.out.print(child[i]+" " );
+         System.out.println("");*/
+        return child;
+    }
+    
     public void crearCromosoma(){
         
         Cromosoma c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
@@ -302,5 +470,47 @@ public class Procesar {
      
      
      }
-    
+
+    public boolean stopMethod(int repeticiones, int iteraciones){
+        int size = this.cromosomasList.size();
+        int index =0;
+        double minFitness=cromosomasList.get(0).funcionObjetivo() ;
+        double currentFitness=0;
+        int cont=0;
+        for(int i=0; i < cromosomasList.size(); i++){
+            currentFitness = cromosomasList.get(i).funcionObjetivo() ;
+            if(currentFitness < minFitness){
+                minFitness = currentFitness;
+                index = i;
+            }
+        }
+  
+        if(this.stopValue!=currentFitness){
+            this.stopValue =currentFitness;
+            this.stopCont =0;
+            this.iteraciones = iteraciones;
+           
+            return true;
+        }else{
+            this.stopCont++;
+        }
+        
+        for(int i=0; i < cromosomasList.size(); i++){
+            currentFitness = cromosomasList.get(i).funcionObjetivo() ;
+            if(currentFitness == minFitness){
+                cont++;
+            }
+        }
+        
+        if(this.stopCont!= this.stopContM)
+            return true;
+        
+        if(cont>=repeticiones){
+            return false;
+        }else{
+             this.stopCont =0;
+        }
+       
+        return true;
+    }    
 }

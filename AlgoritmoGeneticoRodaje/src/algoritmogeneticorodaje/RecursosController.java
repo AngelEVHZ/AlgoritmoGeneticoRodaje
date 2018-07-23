@@ -7,10 +7,12 @@ package algoritmogeneticorodaje;
 
 import algoritmogeneticorodaje.Recursos.Escena;
 import algoritmogeneticorodaje.Recursos.Locacion;
+import algoritmogeneticorodaje.Recursos.Mejores;
 import algoritmogeneticorodaje.Recursos.Procesar;
 import algoritmogeneticorodaje.Recursos.Recurso;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +77,8 @@ public class RecursosController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        iteraciones = new ArrayList<int[]>();
+        iteraciones2 = new ArrayList<int[]>();
         menuDiaNoche.setText("Dia");
         this.tiempoEscena=1;
         MenuItem m1 = new MenuItem("Dia");
@@ -264,31 +268,155 @@ public class RecursosController implements Initializable {
     }
     public void add(){
           this.dataRecurso.add(new Recurso("R1", "100"));
-          this.dataRecurso.add(new Recurso("R2", "100"));
+          this.dataRecurso.add(new Recurso("R2", "500"));
           this.dataRecurso.add(new Recurso("R3", "100"));
+          
           this.dataLocacion.add(new Locacion("L1"));
-          this.dataLocacion.add(new Locacion("L2"));
-          this.dataLocacion.add(new Locacion("L3"));
+         this.dataRecurso.add(new Recurso("R4", "200"));
+          this.dataRecurso.add(new Recurso("R5", "350"));
+          this.dataRecurso.add(new Recurso("R6", "300"));
+          this.dataRecurso.add(new Recurso("R7", "100"));
+          this.dataRecurso.add(new Recurso("R8", "150"));
+          this.dataRecurso.add(new Recurso("R9", "150"));
+         
+
           this.dataEscena.add(new Escena("E1", "2",1));
-          this.dataEscena.add(new Escena("E2", "2",0));
-          this.dataEscena.add(new Escena("E3", "2",1));
-          this.dataEscena.add(new Escena("E4", "2",1));
-          this.dataEscena.add(new Escena("E5", "2",0));
-          this.dataEscena.add(new Escena("E6", "2",1));
+          this.dataEscena.add(new Escena("E2", "5",0));
+          this.dataEscena.add(new Escena("E3", "3",1));
+         this.dataEscena.add(new Escena("E4", "2",1));
+          this.dataEscena.add(new Escena("E5", "5",0));
+          this.dataEscena.add(new Escena("E6", "7",1));
+          this.dataEscena.add(new Escena("E7", "2",1));
+          this.dataEscena.add(new Escena("E8", "4",0));
+          this.dataEscena.add(new Escena("E9", "3",1));
     
+          for(Escena e:dataEscena)
+              e.setLocacion(dataLocacion.get(0));
+          
     }
+    
+    ArrayList<int[]> iteraciones;
+    ArrayList<int[]> iteraciones2;
+    ArrayList<Mejores> mejores1,mejores2;
       @FXML
     private void run(ActionEvent event){
-        int pj = Integer.valueOf(this.pJornada.getText());
-        Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
+       mejores1 = new ArrayList<Mejores>();
         
-        this.recursoDia.setText(p.printCaledario());
-        this.calendario.setText(p.printJornadas());
+        int pj = Integer.valueOf(this.pJornada.getText());
+        
+        for(int i=0; i< 100; i++){
+            Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj,1);
+
+            this.recursoDia.setText(p.printCaledario());
+            this.calendario.setText(p.printJornadas());
+            int[] e = new int[2];
+            mejores1.add(p.getMejores());
+            e[0]= p.getIteraciones();
+            e[1]= p.getMejorF();
+            p.printHistorial();
+            iteraciones.add(e);
+        }
+        monteCarlo(mejores1);
     }
+    
+    public void monteCarlo(ArrayList<Mejores> mejores){
+        System.out.println("Monte carlo/**********************/");
+        int max=0;
+        int actual=0;
+        double iteraciones=0;
+        System.out.println("tabla");
+       for(Mejores m:mejores){
+           for(int i=0; i< m.getIteracion();i++){
+               System.out.print(m.getFitness(i)+",");
+           }
+           System.out.println("");
+       }
+        
+        
+        for(Mejores m:mejores){
+           iteraciones+=m.getIteracion();
+            actual = m.getIteracion();
+            if(actual>max){
+                max = actual;
+            }
+        }
+        iteraciones/=mejores.size();
+        System.out.println("El promedio de iteraciones es "+ iteraciones);
+        int cont=0;
+        double montecarlo[] = new double[max];
+        for(int i=0; i< max;i++){
+            cont = 0;
+            for(Mejores m:mejores){
+               if(i < m.getIteracion()){
+                  cont++;
+                  montecarlo[i]+=m.getFitness(i);
+               }
+            }
+            montecarlo[i]/=cont;
+        }
+        for(int i=0; i< max;i++){
+            System.out.println(montecarlo[i]);
+        }
+        
+    
+        System.out.println("/************************************/");
+    }
+    
      @FXML
     private void run2(ActionEvent event){
+        mejores2 = new ArrayList<Mejores>();
         int pj = Integer.valueOf(this.pJornada.getText());
-        Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
+          for(int i=0; i< 100; i++){
+            Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj,2);
+            this.recursoDia.setText(p.printCaledario());
+            this.calendario.setText(p.printJornadas());
+            mejores2.add(p.getMejores());
+            int[] e = new int[2];
+            e[0]= p.getIteraciones();
+            e[1]= p.getMejorF();
+            p.printHistorial();
+            iteraciones2.add(e);
+          }
+          monteCarlo(mejores2);
+    }
+     @FXML
+    private void estadisticas(ActionEvent event){
+        printIteraciones();
+    }
+    
+    
+    public void printIteraciones(){
+        System.out.println("Primero");
+        double p1=0,p2=0;
+        double pf1=0,pf2=0;
+        double t1=0, t2=0;
+        t1 = iteraciones.size();
+        t2 = iteraciones2.size();
+        
+        for(int[]e:iteraciones){
+            p1+=e[0];
+            pf1+=e[1];
+        }
+       
+        for(int[]e:iteraciones2){
+           p2+=e[0];
+           pf2+=e[1];
+        }
+        p1/=t1;
+        p2/=t2;
+        pf1/=t1;
+        pf2/=t2;
+        System.out.println("T "+t1);
+        System.out.println("Promedio Iteraciones 1 "+p1);
+        System.out.println("Promedio Fitnes 1 "+pf1);
+        System.out.println("");
+        System.out.println("T "+t2);
+        System.out.println("Promedio Iteraciones 2 "+p2);
+        System.out.println("Promedio Fitnes 2 "+pf2);
+        iteraciones = new ArrayList<int[]>();
+        iteraciones2 = new ArrayList<int[]>();
+    
+    
     }
     
 }
