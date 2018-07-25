@@ -82,6 +82,7 @@ public class Procesar {
             //System.out.println("CROSSOVER");
             this.childCromosomasList = crossover(index);
             mutation( this.childCromosomasList);
+            childCromosomasList.add(this.cromosomasList.get(index));
             this.cromosomasList = this.childCromosomasList;
             limpiar();
             iteraciones++;
@@ -119,6 +120,7 @@ public class Procesar {
             //System.out.println("CROSSOVER");
             this.childCromosomasList = crossover(index);
             mutation( this.childCromosomasList);
+            childCromosomasList.add(this.cromosomasList.get(index));
             this.cromosomasList = this.childCromosomasList;
             limpiar();
             iteraciones++;
