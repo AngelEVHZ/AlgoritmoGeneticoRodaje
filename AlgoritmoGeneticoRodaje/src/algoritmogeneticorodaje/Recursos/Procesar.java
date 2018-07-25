@@ -43,7 +43,7 @@ public class Procesar {
          return this.mejores;
      }
 
-     public Procesar(ObservableList<Recurso> dataRecurso, ObservableList<Locacion> dataLocacion,ObservableList<Escena> dataEscena,int pj,int mejora){
+     public Procesar(ObservableList<Recurso> dataRecurso, ObservableList<Locacion> dataLocacion,ObservableList<Escena> dataEscena,int pj){
          mejores = new Mejores();
          this.cromosomasList = new ArrayList<Cromosoma>();
          this.fitnesHistoria=new ArrayList<Integer>();
@@ -55,17 +55,27 @@ public class Procesar {
          this.Nrecursos= this.dataRecurso.size();
          this.Nlocalizaciones=this.dataLocacion.size();
          this.Njornadas=10;
-         
-         this.mejora=mejora;
+        
          setIds();
-         addPoblacionInicial();
+        
+     }
+     public   ArrayList<Cromosoma>  getPoblacion(){
+         return this.cromosomasList;
+     }
+     public void setPoblacion( ArrayList<Cromosoma> poblacion){
+         this.cromosomasList = poblacion;
+
+     }
+     
+     public void run(int mejora){
+         this.mejora=mejora; 
          if(mejora==1)
             search();
          else
             search2();
-         
-        //crearCromosoma();
+     
      }
+     
      public int  getIteraciones(){
          return this.iteraciones;
      }
@@ -236,16 +246,17 @@ public class Procesar {
    
    
     }
-    public void addPoblacionInicial(){
-        
+    public   ArrayList<Cromosoma> generarPoblacionInicial(){
+         ArrayList<Cromosoma> poblacion = new  ArrayList<Cromosoma>();
         for(int i=0; i<NpoblacionInicial;i++){
             Cromosoma c = new Cromosoma(Nescenas,Nrecursos,Nlocalizaciones,Njornadas,paginasJornada,this.dataEscena,this.dataRecurso);
             c.setRandom();
             c.generarJornadas();
-            this.cromosomasList.add(c);
+            poblacion.add(c);
         }
+        return poblacion;
         
-        newChildUniform(this.cromosomasList.get(0).getOrdenFilmacion(),this.cromosomasList.get(2).getOrdenFilmacion() );
+      
     }
     
 

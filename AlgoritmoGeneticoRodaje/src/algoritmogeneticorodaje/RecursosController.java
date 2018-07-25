@@ -5,6 +5,7 @@
  */
 package algoritmogeneticorodaje;
 
+import algoritmogeneticorodaje.Recursos.Cromosoma;
 import algoritmogeneticorodaje.Recursos.Escena;
 import algoritmogeneticorodaje.Recursos.Locacion;
 import algoritmogeneticorodaje.Recursos.Mejores;
@@ -301,12 +302,19 @@ public class RecursosController implements Initializable {
       @FXML
     private void run(ActionEvent event){
        mejores1 = new ArrayList<Mejores>();
+       mejores2 = new ArrayList<Mejores>(); 
+       ArrayList<Cromosoma> poblacion;
         
         int pj = Integer.valueOf(this.pJornada.getText());
         
+        
         for(int i=0; i< 100; i++){
-            Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj,1);
-
+            Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
+            poblacion = p.generarPoblacionInicial();
+            
+          
+            p.setPoblacion(poblacion);
+            p.run(1);
             this.recursoDia.setText(p.printCaledario());
             this.calendario.setText(p.printJornadas());
             int[] e = new int[2];
@@ -315,8 +323,26 @@ public class RecursosController implements Initializable {
             e[1]= p.getMejorF();
             p.printHistorial();
             iteraciones.add(e);
+            
+            
+            Procesar p2 = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
+            p2.setPoblacion(poblacion);
+            p2.run(2);
+            this.recursoDia.setText(p2.printCaledario());
+            this.calendario.setText(p2.printJornadas());
+            mejores2.add(p2.getMejores());
+            int[] e2 = new int[2];
+            e2[0]= p2.getIteraciones();
+            e2[1]= p2.getMejorF();
+            p2.printHistorial();
+            iteraciones2.add(e2);
+            
+            
+            
         }
         monteCarlo(mejores1);
+        monteCarlo(mejores2);
+        
     }
     
     public void monteCarlo(ArrayList<Mejores> mejores){
@@ -367,7 +393,9 @@ public class RecursosController implements Initializable {
         mejores2 = new ArrayList<Mejores>();
         int pj = Integer.valueOf(this.pJornada.getText());
           for(int i=0; i< 100; i++){
-            Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj,2);
+            Procesar p = new Procesar(this.dataRecurso , this.dataLocacion, this.dataEscena,pj);
+            p.setPoblacion(p.generarPoblacionInicial());
+            p.run(2);
             this.recursoDia.setText(p.printCaledario());
             this.calendario.setText(p.printJornadas());
             mejores2.add(p.getMejores());
